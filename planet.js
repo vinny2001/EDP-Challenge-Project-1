@@ -22,8 +22,8 @@ addEventListener('DOMContentLoaded', () => {
   rotation_periodSpan = document.querySelector('span#rotation_period');
   surface_waterSpan = document.querySelector('span#surface_water');
   terrainSpan = document.querySelector('span#terrain');
-  filmsUl = document.querySelector('#filmsList>ul');
-  charactersUl = document.querySelector('#charactersList>ul');
+  filmsUl = document.querySelector('#films>ul');
+  charactersUl = document.querySelector('#characters>ul');
   const sp = new URLSearchParams(window.location.search)
   const id = sp.get('id')
   getPlanet(id)
