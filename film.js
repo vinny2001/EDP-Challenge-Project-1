@@ -9,6 +9,8 @@ console.log("Id: " + id);
 async function fetchFilms() {
     try {
         const film = await fetch(`https://swapi2.azurewebsites.net/api/films/${id}`);
+        film.planets = await fetchFilms(film);
+        film.characters = await fetchCharacters(film);
         const filmResponse = await film.json();
         displayFilmInfo(filmResponse);
         if (!film.ok) {
@@ -18,28 +20,9 @@ async function fetchFilms() {
     } catch (error) {
       console.error("There was a problem with your fetch request: ", error);
     }
+    renderFilms(film)
 }
 fetchFilms();
-
-// Fetch Characters
-async function fetchCharacters(id) {
-    let characterUrl = `https://swapi2.azurewebsites.net/api/films/${id}/characters`;
-    const characters = await fetch(characterUrl)
-    const response = await characters.json();
-    displayCharacters(response);
-    console.log("Characters: " + response);
-}
-fetchCharacters(id);
-
-// Fetch Planets
-async function fetchPlanets(id) {
-    let planetURL = `https://swapi2.azurewebsites.net/api/films/${id}/planets`;
-    const planets = await fetch(planetURL)
-    const response = await planets.json();
-    displayPlanets(response);
-    console.log("Planets: " + response);
-}
-fetchPlanets(id);
 
 function displayFilmInfo(film){
     
@@ -68,24 +51,31 @@ function displayFilmInfo(film){
     
 }
 
-function displayPlanets(planet){
-    let planetDiv = document.createElement('ul');
-    for(const key in planet){
-        planetDiv.innerHTML =`
-            <li>${planet[key].name}</li>
 
-        `;
-    }
-    document.getElementById('planetList').appendChild(planetDiv);
+//NEW
+
+let filmsUl;
+let charactersUl;
+const baseUrl = `https://swapi2.azurewebsites.net/api`;
+
+
+async function fetchPlanet(id) {
+  let planetUrl = `${baseUrl}/planets/${id}`;
+  return await fetch(planetUrl)
+    .then(res => res.json())
 }
 
-function displayCharacters(char){
-    let charDiv = document.createElement('ul');
-    
-    for(const key in char){
-        charDiv.innerHTML =`
-            <li>${char[key].name}</li>
-        `;
-    }
-    document.getElementById('characterList').appendChild(charDiv);
+async function fetchCharacters(planet) {
+  const url = `${baseUrl}/planets/${planet?.id}/characters`;
+  const characters = await fetch(url)
+    .then(res => res.json())
+  return characters;
+}
+
+const renderFilms = film => {
+  
+  const filmsLis = film?.planets?.map(film => `<li><a href="/film.html?id=${film.id}">${film.title}</li>`)
+  filmsUl.innerHTML = filmsLis.join("");
+  const charactersLis = film?.characters?.map(character => `<li><a href="/character.html?id=${character.id}">${character.name}</li>`)
+  charactersUl.innerHTML = charactersLis.join("");
 }
