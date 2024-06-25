@@ -34,7 +34,6 @@ async function getPlanet(id) {
   try {
     planet = await fetchPlanet(id)
     console.log(planet);
-    // planet.homeworld = await fetchHomeworld(character)
     planet.films = await fetchFilms(planet);
     planet.characters = await fetchCharacters(planet);
   }
