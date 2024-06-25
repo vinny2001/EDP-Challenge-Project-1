@@ -33,7 +33,6 @@ async function fetchFilms(id) {
     }
     renderFilms(film);
 }
-fetchFilms();
 
 async function fetchFilm(id) {
   let filmUrl = `${baseUrl}/films/${id}`;
